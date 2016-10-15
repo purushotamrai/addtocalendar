@@ -1,0 +1,179 @@
+<?php
+
+/**
+ * @file
+ * Contains module code.
+ */
+
+use \Drupal\Core\Entity\Entity\EntityViewDisplay;
+use \Drupal\Core\Datetime\DrupalDateTime;
+
+/**
+ * Implements hook_field_formatter_third_party_settings_form().
+ */
+function addtocalendar_field_formatter_third_party_settings_form($plugin, $field_definition, $view_mode, $form, $form_state) {
+  $element = array();
+
+  if (in_array('datetime', $plugin->getPluginDefinition()['field_types'])) {
+    $settings = $plugin->getThirdPartySettings('addtocalendar');
+    $element['addtocalendar'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Show Add to Calender'),
+      '#default_value' => $settings['addtocalendar'],
+    ];
+
+    $element['addtocalendar_settings'] = [
+      '#type' => 'fieldset',
+      '#title' => t('Add to Calender Settings'),
+      '#states' => [
+        'visible' => [
+          'input[name*="addtocalendar"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $element['addtocalendar_settings']['display_text'] = [
+      '#type' => 'textfield',
+      '#title' => t('Display Text'),
+      '#default_value' => !empty($settings['addtocalendar_settings']['display_text']) ? $settings['addtocalendar_settings']['display_text'] : t('Add to Calender'),
+    ];
+
+    $info = [
+      'atc_title' => t('Title'),
+      'atc_description' => t('Description'),
+      'atc_location' => t('Location'),
+      'atc_organizer' => t('Organizer'),
+      'atc_organizer_email' => t('Organizer email'),
+      'atc_date_end' => t('End Date'),
+    ];
+
+    $fields = Drupal::service('entity_field.manager')->getFieldDefinitions($field_definition->get('entity_type'), $field_definition->get('bundle'));
+    $field_options = [];
+
+    foreach ($fields as $id => $field) {
+      if (is_a($field, 'Drupal\field\Entity\FieldConfig')) {
+        $field_options[$id] = $field->getLabel();
+      }
+    }
+
+    $field_options = array_merge(
+      ['token' => t('Use Token/Static Content')],
+      ['title' => t('Title')],
+      $field_options
+    );
+
+    foreach ($info as $id => $label) {
+      $element['addtocalendar_settings'][$id]['field'] = [
+        '#type' => 'select',
+        '#title' => $label . t(': field'),
+        '#options' => $field_options,
+        '#description' => t('Select field to be used as @label for calendar events', array('@label' => $label)),
+        '#default_value' => !empty($settings['addtocalendar_settings'][$id]['field']) ? $settings['addtocalendar_settings'][$id]['field'] : '',
+      ];
+      $element['addtocalendar_settings'][$id]['tokenized'] = [
+        '#type' => 'textfield',
+        '#title' => $label . t(': Static/Tokenized Content'),
+        '#default_value' => !empty($settings['addtocalendar_settings'][$id]['tokenized']) ? $settings['addtocalendar_settings'][$id]['tokenized'] : '',
+      ];
+    }
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function addtocalendar_field_formatter_settings_summary_alter(&$summary, $context) {
+  if (in_array('datetime', $context['formatter']->getPluginDefinition()['field_types'])) {
+    if ($context['formatter']->getThirdPartySetting('addtocalendar', 'addtocalendar')) {
+      $summary[] = t('Add to calendar enabled');
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function addtocalendar_preprocess_field(&$variables) {
+  if ($variables['field_type'] == 'datetime') {
+    $entity = $variables['element']['#object'];
+    $view_mode = $variables['element']['#view_mode'];
+    $field_name = $variables['element']['#field_name'];
+
+    // get the field formatter settings...
+    $entity_display = EntityViewDisplay::collectRenderDisplay($entity, $view_mode);
+    $field_display = $entity_display->getComponent($field_name);
+
+    if (!empty($field_display['third_party_settings']['addtocalendar'])) {
+      $build['addtocalendar'] = [];
+      $settings = $field_display['third_party_settings']['addtocalendar'];
+      if ($settings['addtocalendar']) {
+        $timeZone = date_default_timezone_get();
+        $date = new DrupalDateTime(preg_replace('/T/', ' ', $entity->{$field_name}->value), 'UTC');
+        $build['addtocalendar']['atc_date_start'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $date->format('m/d/Y g:ia', ['timezone' => $timeZone]),
+          '#attributes' => [
+            'class' => 'atc_date_start',
+          ],
+        ];
+        $info = [
+          'atc_date_end',
+          'atc_title',
+          'atc_description',
+          'atc_location',
+          'atc_organizer',
+          'atc_organizer_email',
+        ];
+        foreach ($info as $value) {
+          switch ($settings['addtocalendar_settings'][$value]['field']) {
+            case 'token':
+              $class_value = $settings['addtocalendar_settings'][$value]['tokenized'];
+              break;
+
+            case 'title':
+              $class_value = $entity->getTitle();
+              break;
+
+            default:
+              $field = $settings['addtocalendar_settings'][$value]['field'];
+              $class_value = strip_tags($entity->{$field}->value);
+              break;
+          }
+          $build['addtocalendar'][$value] = [
+            '#type' => 'html_tag',
+            '#tag' => 'var',
+            '#value' => $class_value,
+            '#attributes' => [
+              'class' => $value,
+            ],
+          ];
+        }
+
+        $date = new DrupalDateTime(preg_replace('/T/', ' ', $build['addtocalendar']['atc_date_end']['#value']), 'UTC');
+        $build['addtocalendar']['atc_date_end']['#value'] = $date->format('m/d/Y g:ia', ['timezone' => $timeZone]);
+
+        $build['addtocalendar']['atc_timezone'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $timeZone,
+          '#attributes' => [
+            'class' => 'atc_timezone',
+          ],
+        ];
+
+        $build['addtocalendar'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => '<var class="atc_event">' . render($build['addtocalendar']) . '</var>',
+          '#attributes' => [
+            'class' => 'addtocalendar atc-style-blue',
+          ],
+        ];
+      }
+      $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
+      $variables['#attached']['library'][] = 'addtocalendar/base';
+    }
+  }
+}
