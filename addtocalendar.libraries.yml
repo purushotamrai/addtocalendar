@@ -1,0 +1,6 @@
+base:
+  css:
+    module:
+      '//addtocalendar.com/atc/1.5/atc-style-blue.css': {type: external}
+  js:
+    '//addtocalendar.com/atc/1.5/atc.min.js': { type: external, minified: true }
