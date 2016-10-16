@@ -76,6 +76,20 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
         '#default_value' => !empty($settings['addtocalendar_settings'][$id]['tokenized']) ? $settings['addtocalendar_settings'][$id]['tokenized'] : '',
       ];
     }
+
+    $element['addtocalendar_settings']['data_calendars'] = [
+      '#type' => 'checkboxes',
+      '#options' => [
+        'iCalendar' => t('iCalendar'),
+        'Google Calendar' => t('Google Calendar'),
+        'Outlook' => t('Outlook'),
+        'Outlook Online' => t('Outlook Online'),
+        'Yahoo! Calendar' => t('Yahoo! Calendar'),
+      ],
+      '#default_value' => !empty($settings['addtocalendar_settings']['data_calendars']) ? $settings['addtocalendar_settings']['data_calendars'] : '',
+      '#title' => t('List of calendars to show in button list.'),
+    ];
+
   }
   return $element;
 }
@@ -171,6 +185,14 @@ function addtocalendar_preprocess_field(&$variables) {
             'class' => 'addtocalendar atc-style-blue',
           ],
         ];
+
+        if ($settings['addtocalendar_settings']['data_calendars']) {
+          $value = '';
+          foreach ($settings['addtocalendar_settings']['data_calendars'] as $option) {
+            $value .= $option . ', ';
+          }
+          $build['addtocalendar']['#attributes']['data-calendars'] = $value;
+        }
       }
       $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
       $variables['#attached']['library'][] = 'addtocalendar/base';
