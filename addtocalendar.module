@@ -16,18 +16,18 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
 
   if (in_array('datetime', $plugin->getPluginDefinition()['field_types'])) {
     $settings = $plugin->getThirdPartySettings('addtocalendar');
-    $element['addtocalendar'] = [
+    $element['addtocalendar_show'] = [
       '#type' => 'checkbox',
-      '#title' => t('Show Add to Calender'),
-      '#default_value' => $settings['addtocalendar'],
+      '#title' => t('Show Add to Calendar'),
+      '#default_value' => $settings['addtocalendar_show'],
     ];
 
     $element['addtocalendar_settings'] = [
       '#type' => 'fieldset',
-      '#title' => t('Add to Calender Settings'),
+      '#title' => t('Add to Calendar Settings'),
       '#states' => [
         'visible' => [
-          'input[name*="addtocalendar"]' => ['checked' => TRUE],
+          'input[name*="addtocalendar_show"]' => ['checked' => TRUE],
         ],
       ],
     ];
@@ -99,7 +99,7 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
  */
 function addtocalendar_field_formatter_settings_summary_alter(&$summary, $context) {
   if (in_array('datetime', $context['formatter']->getPluginDefinition()['field_types'])) {
-    if ($context['formatter']->getThirdPartySetting('addtocalendar', 'addtocalendar')) {
+    if ($context['formatter']->getThirdPartySetting('addtocalendar', 'addtocalendar_show')) {
       $summary[] = t('Add to calendar enabled');
     }
   }
@@ -121,7 +121,7 @@ function addtocalendar_preprocess_field(&$variables) {
     if (!empty($field_display['third_party_settings']['addtocalendar'])) {
       $build['addtocalendar'] = [];
       $settings = $field_display['third_party_settings']['addtocalendar'];
-      if ($settings['addtocalendar']) {
+      if ($settings['addtocalendar_show']) {
         $timeZone = date_default_timezone_get();
         $date = new DrupalDateTime(preg_replace('/T/', ' ', $entity->{$field_name}->value), 'UTC');
         $build['addtocalendar']['atc_date_start'] = [
