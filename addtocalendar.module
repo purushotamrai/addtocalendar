@@ -77,6 +77,17 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
       ];
     }
 
+    $element['addtocalendar_settings']['atc_privacy'] = [
+      '#type' => 'select',
+      '#title' => t('Privacy'),
+      '#options' => [
+        'public' => t('Public'),
+        'private' => t('Private'),
+      ],
+      '#description' => t('Use public for free access to event information from any places. User private if the event is closed to public access.'),
+      '#default_value' => !empty($settings['addtocalendar_settings']['atc_privacy']) ? $settings['addtocalendar_settings']['atc_privacy'] : '',
+    ];
+
     $element['addtocalendar_settings']['data_calendars'] = [
       '#type' => 'checkboxes',
       '#options' => [
@@ -177,6 +188,15 @@ function addtocalendar_preprocess_field(&$variables) {
           ],
         ];
 
+        $build['addtocalendar']['atc_privacy'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $settings['addtocalendar_settings']['atc_privacy'],
+          '#attributes' => [
+            'class' => 'atc_privacy',
+          ],
+        ];
+
         $build['addtocalendar'] = [
           '#type' => 'html_tag',
           '#tag' => 'span',
@@ -188,10 +208,14 @@ function addtocalendar_preprocess_field(&$variables) {
 
         if ($settings['addtocalendar_settings']['data_calendars']) {
           $value = '';
-          foreach ($settings['addtocalendar_settings']['data_calendars'] as $option) {
-            $value .= $option . ', ';
+          foreach ($settings['addtocalendar_settings']['data_calendars'] as $key => $set) {
+            if ($set) {
+              $value .= $key . ', ';
+            }
           }
-          $build['addtocalendar']['#attributes']['data-calendars'] = $value;
+          if ($value) {
+            $build['addtocalendar']['#attributes']['data-calendars'] = $value;
+          }
         }
       }
       $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
