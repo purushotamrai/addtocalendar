@@ -32,6 +32,17 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
       ],
     ];
 
+    $element['addtocalendar_settings']['style'] = [
+      '#type' => 'select',
+      '#title' => t('Select Style'),
+      '#options' => [
+        0 => t('No Styling'),
+        'blue' => t('Blue'),
+        'glow_orange' => t('Glow Orange'),
+      ],
+      '#default_value' => !empty($settings['addtocalendar_settings']['style']) ? $settings['addtocalendar_settings']['style'] : 'blue',
+    ];
+
     $element['addtocalendar_settings']['display_text'] = [
       '#type' => 'textfield',
       '#title' => t('Display Text'),
@@ -141,6 +152,7 @@ function addtocalendar_preprocess_field(&$variables) {
     if (!empty($field_display['third_party_settings']['addtocalendar'])) {
       $build['addtocalendar'] = [];
       $settings = $field_display['third_party_settings']['addtocalendar'];
+      $style = [];
       if ($settings['addtocalendar_show']) {
         $timeZone = date_default_timezone_get();
         $date = new DrupalDateTime(preg_replace('/T/', ' ', $entity->{$field_name}->value), 'UTC');
@@ -211,7 +223,9 @@ function addtocalendar_preprocess_field(&$variables) {
           '#tag' => 'span',
           '#value' => '<var class="atc_event">' . render($build['addtocalendar']) . '</var>',
           '#attributes' => [
-            'class' => 'addtocalendar atc-style-blue',
+            'class' => [
+              'addtocalendar',
+            ],
           ],
         ];
 
@@ -228,8 +242,25 @@ function addtocalendar_preprocess_field(&$variables) {
         }
 
         $build['addtocalendar']['#attributes']['data-secure'] = $settings['addtocalendar_settings']['data_secure'];
+
+        // Styling
+        switch ($settings['addtocalendar_settings']['style']) {
+          case 'blue':
+            $style['class'] = 'atc-style-blue';
+            $style['library'] = 'addtocalendar/blue';
+            break;
+
+          case 'glow_orange':
+            $style['class'] = 'atc-style-glow-orange';
+            $style['library'] = 'addtocalendar/glow_orange';
+            break;
+        }
+        if (!empty($style)) {
+          $build['addtocalendar']['#attributes']['class'][] = $style['class'];
+          $variables['#attached']['library'][] = $style['library'];
+        }
       }
-      
+
       $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
       $variables['#attached']['library'][] = 'addtocalendar/base';
     }
