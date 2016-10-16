@@ -87,7 +87,16 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
       '#description' => t('Use public for free access to event information from any places. User private if the event is closed to public access.'),
       '#default_value' => !empty($settings['addtocalendar_settings']['atc_privacy']) ? $settings['addtocalendar_settings']['atc_privacy'] : '',
     ];
-
+    $element['addtocalendar_settings']['data_secure'] = [
+      '#type' => 'select',
+      '#title' => t('Security level'),
+      '#options' => [
+        'auto' => t('Auto'),
+        'true' => t('Use https only'),
+        'false' => t('Use http only'),
+      ],
+      '#default_value' => !empty($settings['addtocalendar_settings']['data_secure']) ? $settings['addtocalendar_settings']['data_secure'] : '',
+    ];
     $element['addtocalendar_settings']['data_calendars'] = [
       '#type' => 'checkboxes',
       '#options' => [
@@ -217,7 +226,10 @@ function addtocalendar_preprocess_field(&$variables) {
             $build['addtocalendar']['#attributes']['data-calendars'] = $value;
           }
         }
+
+        $build['addtocalendar']['#attributes']['data-secure'] = $settings['addtocalendar_settings']['data_secure'];
       }
+      
       $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
       $variables['#attached']['library'][] = 'addtocalendar/base';
     }
