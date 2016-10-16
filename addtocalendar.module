@@ -5,8 +5,21 @@
  * Contains module code.
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+
 require 'includes/addtocalendar.form.inc';
 require 'includes/addtocalendar.build.inc';
+
+/**
+ * Implements hook_help().
+ */
+function addtocalendar_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.addtocalendar':
+      $output = file_get_contents(drupal_get_path('module', 'addtocalendar') . '/README.md');
+      return $output;
+  }
+}
 
 /**
  * Implements hook_field_formatter_third_party_settings_form().
