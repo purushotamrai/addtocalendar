@@ -73,6 +73,14 @@ function _addtocalendar_build_form($settings, $field_definition) {
     $field_options
   );
 
+  if (\Drupal::moduleHandler()->moduleExists('token')) {
+    $element['addtocalendar_settings']['token_help'] = [
+      '#type' => 'markup',
+      '#token_types' => array('node'),
+      '#theme' => 'token_tree_link',
+    ];
+  }
+
   foreach ($info as $id => $label) {
     $element['addtocalendar_settings'][$id]['field'] = [
       '#type' => 'select',
