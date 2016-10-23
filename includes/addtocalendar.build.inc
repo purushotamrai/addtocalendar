@@ -131,8 +131,13 @@ function _addtocalendar_preprocess_field(&$variables) {
         $variables['#attached']['library'][] = $style['library'];
       }
     }
-
-    $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
+    if (isset($variables['items'][0]['content']['#markup'])) {
+      $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
+    }
+    elseif (isset($variables['items'][0]['content']['#theme'])) {
+      unset($variables['items'][0]['content']['#theme']);
+      $variables['items'][0]['content']['#markup'] = $variables['items'][0]['content']['#text'] . render($build['addtocalendar']);
+    }
     $variables['#attached']['library'][] = 'addtocalendar/base';
   }
 }
