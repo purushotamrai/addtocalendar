@@ -25,6 +25,9 @@ function _addtocalendar_preprocess_field(&$variables) {
     $settings = $field_display['third_party_settings']['addtocalendar'];
     $style = [];
     if ($settings['addtocalendar_show']) {
+      $token_service = \Drupal::token();
+      $language_manager = \Drupal::languageManager();
+      $token_options = ['langcode' => $language_manager->getCurrentLanguage($entity->language()->getId()), 'callback' => '', 'clear' => TRUE];
       $timeZone = date_default_timezone_get();
       $date = new DrupalDateTime(preg_replace('/T/', ' ', $entity->{$field_name}->value), 'UTC');
       $build['addtocalendar']['atc_date_start'] = [
@@ -47,6 +50,7 @@ function _addtocalendar_preprocess_field(&$variables) {
         switch ($settings['addtocalendar_settings'][$value]['field']) {
           case 'token':
             $class_value = $settings['addtocalendar_settings'][$value]['tokenized'];
+            $class_value = $token_service->replace($class_value, array('node' => $entity), $token_options);
             break;
 
           case 'title':
