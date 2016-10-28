@@ -145,6 +145,29 @@ function addtocalendar_field_formatter_settings_form_alter(&$settings_form, $con
 }
 
 /**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function addtocalendar_field_formatter_settings_summary_alter(&$summary, $context) {
+  // Append a message to the summary when foo_formatter has
+  // mymodule_extra_setting set to TRUE for the current view mode.
+
+  if ($context['instance']['display'][$context['view_mode']]['type'] == 'date_default') {
+    $display = $context['instance']['display'][$context['view_mode']];
+    $settings = $display['settings'];
+    if (!empty($summary)) {
+      $summary .= '';
+    }
+
+    if ($settings['addtocalendar_show']) {
+      $summary .= '</br>' . t('Add to calendar is enabled.');
+    }
+    else{
+      $summary .= '</br>' . t('Add to calendar is disabled.');
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_field().
  */
 function addtocalendar_preprocess_field(&$variables) {
