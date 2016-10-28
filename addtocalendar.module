@@ -143,6 +143,7 @@ function addtocalendar_field_formatter_settings_form_alter(&$settings_form, $con
     );
   }
 }
+
 /**
  * Implements hook_preprocess_field().
  */
@@ -256,7 +257,26 @@ function addtocalendar_preprocess_field(&$variables) {
         }
 
         $build['addtocalendar']['#attributes']['data-secure'] = $settings['data_secure'];
+        // Styling.
+        switch ($settings['style']) {
+          case 'blue':
+            $style['class'] = 'atc-style-blue';
+            drupal_add_js('//addtocalendar.com/atc/1.5/atc.min.js', 'external');
+            drupal_add_css('//addtocalendar.com/atc/1.5/atc-style-blue.css', 'external');
+            break;
 
+          case 'glow_orange':
+            $style['class'] = 'atc-style-glow-orange';
+            drupal_add_js('//addtocalendar.com/atc/1.5/atc.min.js', 'external');
+            drupal_add_css('//addtocalendar.com/atc/1.5/atc-style-glow-orange.css', 'external');
+            break;
+
+          default:
+            drupal_add_js('//addtocalendar.com/atc/1.5/atc.min.js', 'external');
+            drupal_add_css('//addtocalendar.com/atc/1.5/atc-base.css', 'external');
+            break;
+
+        }
         if (!empty($style)) {
           $build['addtocalendar']['#attributes']['class'][] = $style['class'];
 
@@ -267,5 +287,3 @@ function addtocalendar_preprocess_field(&$variables) {
     }
   }
 }
-
-
