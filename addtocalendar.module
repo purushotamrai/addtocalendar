@@ -143,3 +143,129 @@ function addtocalendar_field_formatter_settings_form_alter(&$settings_form, $con
     );
   }
 }
+/**
+ * Implements hook_preprocess_field().
+ */
+function addtocalendar_preprocess_field(&$variables) {
+  // Provide an extra variable to the field template when the field uses
+  // a formatter of type 'foo_formatter'.
+  if ($variables['element']['#formatter'] == 'date_default') {
+    // dsm($variables);
+    $entity_type = $variables['element']['#entity_type'];
+    $field_name  = $variables['element']['#field_name'];
+    $bundle      = $variables['element']['#bundle'];
+    $view_mode   = $variables['element']['#view_mode'];
+    $entity = $variables['element']['#object'];
+    $formatter_settings = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode);
+    // dsm($formatter_settings);
+    // Make the setting available in the field template.
+    $variables['addtocalendar_settings'] = $formatter_settings['addtocalendar_settings'];
+    // dsm($variables);
+    if (!empty($variables['addtocalendar_settings'])) {
+      $build['addtocalendar'] = [];
+      $settings = $variables['addtocalendar_settings'];
+      if ($formatter_settings['addtocalendar_show']) {
+        $timeZone = date_default_timezone_get();
+        $date = format_date(strtotime($variables['element']['#object']->field_date['und'][0]['value']), 'custom', 'm/d/Y g:ia');
+        $build['addtocalendar']['atc_date_start'] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $date,
+          '#attributes' => array(
+            'class' => 'atc_date_start',
+          ),
+        );
+
+        $info = array(
+          'atc_date_end',
+          'atc_title',
+          'atc_description',
+          'atc_location',
+          'atc_organizer',
+          'atc_organizer_email',
+        );
+
+        foreach ($info as $value) {
+          switch ($settings[$value]['field']) {
+            case 'token':
+              $class_value = $settings[$value]['tokenized'];
+              break;
+
+            case 'title':
+              $class_value = entity_label($entity_type, $entity);
+              break;
+
+            default:
+              $field = $settings[$value]['field'];
+              $field_data = field_get_items($entity_type, $entity, $field);
+              $class_value = $field_data[0]['value'];
+              break;
+          }
+
+          $build['addtocalendar'][$value] = array(
+            '#type' => 'html_tag',
+            '#tag' => 'var',
+            '#value' => $class_value,
+            '#attributes' => array(
+              'class' => $value,
+            ),
+          );
+
+        }
+        $build['addtocalendar']['atc_date_end']['#value'] = format_date(strtotime($build['addtocalendar']['atc_date_end']['#value']), 'custom', 'm/d/Y g:ia');
+
+        $build['addtocalendar']['atc_timezone'] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $timeZone,
+          '#attributes' => array(
+            'class' => 'atc_timezone',
+          ),
+        );
+
+        $build['addtocalendar']['atc_privacy'] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'var',
+          '#value' => $settings['atc_privacy'],
+          '#attributes' => array(
+            'class' => 'atc_privacy',
+          ),
+        );
+
+        $build['addtocalendar'] = array(
+          '#type' => 'html_tag',
+          '#tag' => 'span',
+          '#value' => '<var class="atc_event">' . render($build['addtocalendar']) . '</var>',
+          '#attributes' => array(
+            'class' => array(
+              'addtocalendar',
+            ),
+          ),
+        );
+
+        if ($settings['data_calendars']) {
+          $value = '';
+          foreach ($settings['data_calendars'] as $key => $set) {
+            if ($set) {
+              $value .= $key . ', ';
+            }
+          }
+          if ($value) {
+            $build['addtocalendar']['#attributes']['data-calendars'] = $value;
+          }
+        }
+
+        $build['addtocalendar']['#attributes']['data-secure'] = $settings['data_secure'];
+
+        if (!empty($style)) {
+          $build['addtocalendar']['#attributes']['class'][] = $style['class'];
+
+        }
+      }
+      $variables['items'][0]['#markup'] .= render($build['addtocalendar']);
+      $variables['#attached']['library'][] = drupal_add_css('//addtocalendar.com/atc/1.5/atc-base.css', 'external');
+    }
+  }
+}
+
+
