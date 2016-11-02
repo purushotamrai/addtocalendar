@@ -2,3 +2,4 @@ name = Add To Calendar
 description = 'Add to calendar button to be used for event page.'
 core = 7.x
 dependencies[] = date:date
+dependencies[] = field_formatter_settings:field_formatter_settings
