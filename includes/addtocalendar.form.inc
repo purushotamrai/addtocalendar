@@ -7,10 +7,12 @@
 
 /**
  * Creates Settings form.
+ *
  * @param $settings
- * Third party Settings array.
+ *   Third party Settings array.
  * @param $field_definition
- * Field Definition of current field.
+ *   Field Definition of current field.
+ *
  * @return array
  */
 function _addtocalendar_build_form($settings, $field_definition) {
@@ -19,7 +21,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
   $element['addtocalendar_show'] = [
     '#type' => 'checkbox',
     '#title' => t('Show Add to Calendar'),
-    '#default_value' => $settings['addtocalendar_show'],
+    '#default_value' => !empty($settings['addtocalendar_show']) ? $settings['addtocalendar_show'] : 0,
   ];
 
   $element['addtocalendar_settings'] = [
@@ -49,13 +51,36 @@ function _addtocalendar_build_form($settings, $field_definition) {
     '#default_value' => !empty($settings['addtocalendar_settings']['display_text']) ? $settings['addtocalendar_settings']['display_text'] : t('Add to Calender'),
   ];
 
+  // Fetching site name and site email id.
+  $config = \Drupal::config('system.site');
+  $site_name = $config->get('name');
+  $site_mail = $config->get('mail');
+
   $info = [
-    'atc_title' => t('Title'),
-    'atc_description' => t('Description'),
-    'atc_location' => t('Location'),
-    'atc_organizer' => t('Organizer'),
-    'atc_organizer_email' => t('Organizer email'),
-    'atc_date_end' => t('End Date'),
+    'atc_title' => [
+      'label' => t('Title'),
+      'sample_data' => 'Title',
+    ],
+    'atc_description' => [
+      'label' => t('Description'),
+      'sample_data' => 'Description',
+    ],
+    'atc_location' => [
+      'label' => t('Location'),
+      'sample_data' => 'Location',
+    ],
+    'atc_organizer' => [
+      'label' => t('Organizer'),
+      'sample_data' => $site_name,
+    ],
+    'atc_organizer_email' => [
+      'label' => t('Organizer'),
+      'sample_data' => $site_mail,
+    ],
+    'atc_date_end' => [
+      'label' => t('End Date'),
+      'sample_data' => '',
+    ],
   ];
 
   $fields = Drupal::service('entity_field.manager')->getFieldDefinitions($field_definition->get('entity_type'), $field_definition->get('bundle'));
@@ -81,18 +106,18 @@ function _addtocalendar_build_form($settings, $field_definition) {
     ];
   }
 
-  foreach ($info as $id => $label) {
+  foreach ($info as $id => $data) {
     $element['addtocalendar_settings'][$id]['field'] = [
       '#type' => 'select',
-      '#title' => $label . t(': field'),
+      '#title' => $data['label'] . t(': field'),
       '#options' => $field_options,
-      '#description' => t('Select field to be used as @label for calendar events', array('@label' => $label)),
+      '#description' => t('Select field to be used as @label for calendar events', array('@label' => $data['label'])),
       '#default_value' => !empty($settings['addtocalendar_settings'][$id]['field']) ? $settings['addtocalendar_settings'][$id]['field'] : '',
     ];
     $element['addtocalendar_settings'][$id]['tokenized'] = [
       '#type' => 'textfield',
-      '#title' => $label . t(': Static/Tokenized Content'),
-      '#default_value' => !empty($settings['addtocalendar_settings'][$id]['tokenized']) ? $settings['addtocalendar_settings'][$id]['tokenized'] : '',
+      '#title' => $data['label'] . t(': Static/Tokenized Content'),
+      '#default_value' => !empty($settings['addtocalendar_settings'][$id]['tokenized']) ? $settings['addtocalendar_settings'][$id]['tokenized'] : $data['sample_data'],
     ];
   }
 
