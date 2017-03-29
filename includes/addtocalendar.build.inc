@@ -32,7 +32,7 @@ function _addtocalendar_preprocess_field(&$variables) {
       $build['addtocalendar']['atc_date_start'] = [
         '#type' => 'html_tag',
         '#tag' => 'var',
-        '#value' => $date->format('m/d/Y g:ia', ['timezone' => $timeZone]),
+        '#value' => $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]),
         '#attributes' => [
           'class' => 'atc_date_start',
         ],
@@ -71,8 +71,11 @@ function _addtocalendar_preprocess_field(&$variables) {
         ];
       }
 
+      // Assign end date the value of start date if no date is present.
+      $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $entity->{$field_name}->value;
+
       $date = new DrupalDateTime(preg_replace('/T/', ' ', $build['addtocalendar']['atc_date_end']['#value']), 'UTC');
-      $build['addtocalendar']['atc_date_end']['#value'] = $date->format('m/d/Y g:ia', ['timezone' => $timeZone]);
+      $build['addtocalendar']['atc_date_end']['#value'] = $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
 
       $build['addtocalendar']['atc_timezone'] = [
         '#type' => 'html_tag',
