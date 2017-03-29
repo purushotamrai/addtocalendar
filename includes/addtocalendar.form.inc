@@ -154,5 +154,30 @@ function _addtocalendar_build_form($settings, $field_definition) {
     '#title' => t('List of calendars to show in button list.'),
   ];
 
+  $cardinality = $field_definition->getFieldStorageDefinition()->getCardinality();
+
+  if ($cardinality != 1) {
+    $element['addtocalendar_settings']['multiple_value'] = [
+      '#type' => 'select',
+      '#title' => t('Multiple Value Options'),
+      '#options' => [
+        1 => t('Show one of the values'),
+        // 2 => t('Show multiple AddtoCalendar Buttons'),
+      ],
+      '#default_value' => !empty($settings['addtocalendar_settings']['multiple_value']) ? $settings['addtocalendar_settings']['multiple_value'] : 1,
+    ];
+    $element['addtocalendar_settings']['delta'] = [
+      '#type' => 'textfield',
+      '#title' => t('Delta'),
+      '#states' => [
+        'visible' => [
+          ':input[name="fields[' . $field_definition->get('field_name') . '][settings_edit_form][third_party_settings][addtocalendar][addtocalendar_settings][multiple_value]"]' => [
+            'value' => 1,
+          ],
+        ],
+      ],
+      '#default_value' => !empty($settings['addtocalendar_settings']['delta']) ? $settings['addtocalendar_settings']['delta'] : 0,
+    ];
+  }
   return $element;
 }

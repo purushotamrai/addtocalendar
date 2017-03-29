@@ -28,7 +28,13 @@ function _addtocalendar_preprocess_field(&$variables) {
       $token_service = \Drupal::token();
       $token_options = ['langcode' => $entity->language()->getId(), 'callback' => '', 'clear' => TRUE];
       $timeZone = date_default_timezone_get();
-      $date = new DrupalDateTime(preg_replace('/T/', ' ', $entity->{$field_name}->value), 'UTC');
+      $values = $entity->{$field_name}->getValue();
+      $delta = !empty($settings['addtocalendar_settings']['delta']) ? $settings['addtocalendar_settings']['delta'] : 0;
+      if (empty($values[$delta]['value'])) {
+        return;
+      }
+
+      $date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$delta]['value']), 'UTC');
       $build['addtocalendar']['atc_date_start'] = [
         '#type' => 'html_tag',
         '#tag' => 'var',
