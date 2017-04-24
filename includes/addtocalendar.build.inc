@@ -16,7 +16,7 @@ function _addtocalendar_preprocess_field(&$variables) {
   $view_mode = $variables['element']['#view_mode'];
   $field_name = $variables['element']['#field_name'];
 
-  // get the field formatter settings...
+  // Get the field formatter settings...
   $entity_display = EntityViewDisplay::collectRenderDisplay($entity, $view_mode);
   $field_display = $entity_display->getComponent($field_name);
 
@@ -78,10 +78,7 @@ function _addtocalendar_preprocess_field(&$variables) {
       }
 
       // Assign end date the value of start date if no date is present.
-      $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $date;
-
-      $date = new DrupalDateTime(preg_replace('/T/', ' ', $build['addtocalendar']['atc_date_end']['#value']), 'UTC');
-      $build['addtocalendar']['atc_date_end']['#value'] = $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
+      $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $build['addtocalendar']['atc_date_start']['#value'];
 
       $build['addtocalendar']['atc_timezone'] = [
         '#type' => 'html_tag',
@@ -126,7 +123,7 @@ function _addtocalendar_preprocess_field(&$variables) {
 
       $build['addtocalendar']['#attributes']['data-secure'] = $settings['addtocalendar_settings']['data_secure'];
 
-      // Styling
+      // Styling.
       switch ($settings['addtocalendar_settings']['style']) {
         case 'blue':
           $style['class'] = 'atc-style-blue';
