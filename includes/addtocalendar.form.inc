@@ -85,7 +85,6 @@ function _addtocalendar_build_form($settings, $field_definition) {
 
   $fields = Drupal::service('entity_field.manager')->getFieldDefinitions($field_definition->get('entity_type'), $field_definition->get('bundle'));
   $field_options = [];
-
   foreach ($fields as $id => $field) {
     if (is_a($field, 'Drupal\field\Entity\FieldConfig')) {
       $field_options[$id] = $field->getLabel();
@@ -162,7 +161,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
       '#title' => t('Multiple Value Options'),
       '#options' => [
         1 => t('Show one of the values'),
-        // 2 => t('Show multiple AddtoCalendar Buttons'),
+        // 2 => t('Show multiple AddtoCalendar Buttons'),.
       ],
       '#default_value' => !empty($settings['addtocalendar_settings']['multiple_value']) ? $settings['addtocalendar_settings']['multiple_value'] : 1,
     ];

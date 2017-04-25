@@ -33,8 +33,11 @@ function _addtocalendar_preprocess_field(&$variables) {
       if (empty($values[$delta]['value'])) {
         return;
       }
-
       $date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$delta]['value']), 'UTC');
+      if (!empty($values[$delta]['end_value']) && isset($values[$delta]['end_value'])) {
+        $end_date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$delta]['end_value']), 'UTC');
+      }
+
       $build['addtocalendar']['atc_date_start'] = [
         '#type' => 'html_tag',
         '#tag' => 'var',
@@ -64,7 +67,12 @@ function _addtocalendar_preprocess_field(&$variables) {
 
           default:
             $field = $settings['addtocalendar_settings'][$value]['field'];
-            $class_value = strip_tags($entity->{$field}->value);
+            if (strip_tags($entity->{$field}->getFieldDefinition()->getType()) == 'daterange') {
+              $class_value = strip_tags($entity->{$field}->end_value);
+            }
+            else {
+              $class_value = strip_tags($entity->{$field}->value);
+            }
             break;
         }
         $build['addtocalendar'][$value] = [
@@ -77,8 +85,17 @@ function _addtocalendar_preprocess_field(&$variables) {
         ];
       }
 
-      // Assign end date the value of start date if no date is present.
-      $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $build['addtocalendar']['atc_date_start']['#value'];
+      // Assign end date the value of start date if no end date is present and its not a daterange field.
+      if (empty($end_date)) {
+        $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $build['addtocalendar']['atc_date_start']['#value'];
+        $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_start']['#value'] : $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
+      }
+      // Assign end date the value of end date if no end date is present and its a daterange field.
+      else {
+        $end_date_val = $end_date->__toString();
+        $build['addtocalendar']['atc_date_end']['#value'] = (!empty($build['addtocalendar']['atc_date_end']['#value'])) ? $build['addtocalendar']['atc_date_end']['#value'] : $end_date_val;
+        $build['addtocalendar']['atc_date_end']['#value'] = $end_date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
+      }
 
       $build['addtocalendar']['atc_timezone'] = [
         '#type' => 'html_tag',
@@ -140,10 +157,11 @@ function _addtocalendar_preprocess_field(&$variables) {
         $variables['#attached']['library'][] = $style['library'];
       }
     }
+
     if (isset($variables['items'][0]['content']['#markup'])) {
       $variables['items'][0]['content']['#markup'] .= render($build['addtocalendar']);
     }
-    elseif (isset($variables['items'][0]['content']['#theme'])) {
+    elseif (isset($variables['items'][0]['content'])) {
       unset($variables['items'][0]['content']['#theme']);
       $variables['items'][0]['content']['#markup'] = $variables['items'][0]['content']['#text'] . render($build['addtocalendar']);
     }

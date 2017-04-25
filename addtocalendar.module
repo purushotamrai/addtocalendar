@@ -26,7 +26,7 @@ function addtocalendar_help($route_name, RouteMatchInterface $route_match) {
  */
 function addtocalendar_field_formatter_third_party_settings_form($plugin, $field_definition, $view_mode, $form, $form_state) {
   $element = [];
-  if (in_array('datetime', $plugin->getPluginDefinition()['field_types'])) {
+  if (count(array_intersect(['datetime', 'daterange'], $plugin->getPluginDefinition()['field_types']))) {
     $settings = $plugin->getThirdPartySettings('addtocalendar');
     $element = _addtocalendar_build_form($settings, $field_definition);
   }
@@ -37,7 +37,7 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
  * Implements hook_field_formatter_settings_summary_alter().
  */
 function addtocalendar_field_formatter_settings_summary_alter(&$summary, $context) {
-  if (in_array('datetime', $context['formatter']->getPluginDefinition()['field_types'])) {
+  if (count(array_intersect(['datetime', 'daterange'], $context['formatter']->getPluginDefinition()['field_types']))) {
     if ($context['formatter']->getThirdPartySetting('addtocalendar', 'addtocalendar_show')) {
       $summary[] = t('Add to calendar enabled');
     }
@@ -48,7 +48,7 @@ function addtocalendar_field_formatter_settings_summary_alter(&$summary, $contex
  * Implements hook_preprocess_field().
  */
 function addtocalendar_preprocess_field(&$variables) {
-  if ($variables['field_type'] == 'datetime') {
+  if ($variables['field_type'] == 'datetime' || $variables['field_type'] == 'daterange') {
     _addtocalendar_preprocess_field($variables);
   }
 }
