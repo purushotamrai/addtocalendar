@@ -38,7 +38,7 @@ function _addtocalendar_preprocess_field(&$variables) {
       if ($settings['addtocalendar_settings']['multiple_value'] == 1) {
         $temp = $values[$delta];
         unset($values);
-        $values = array($delta => $temp);
+        $values = [$delta => $temp];
         unset($temp);
       }
       foreach ($values as $index => $date_val) {
@@ -67,7 +67,7 @@ function _addtocalendar_preprocess_field(&$variables) {
           switch ($settings['addtocalendar_settings'][$value]['field']) {
             case 'token':
               $class_value = $settings['addtocalendar_settings'][$value]['tokenized'];
-              $class_value = $token_service->replace($class_value, array('node' => $entity), $token_options);
+              $class_value = $token_service->replace($class_value, ['node' => $entity], $token_options);
               break;
 
             case 'title':
