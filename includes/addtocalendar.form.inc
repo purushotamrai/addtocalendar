@@ -158,16 +158,17 @@ function _addtocalendar_build_form($settings, $field_definition) {
   if ($cardinality != 1) {
     $element['addtocalendar_settings']['multiple_value'] = [
       '#type' => 'select',
-      '#title' => t('Multiple Value Options'),
+      '#title' => t('AddToCalendar button visibility'),
       '#options' => [
-        1 => t('Show one of the values'),
-        // 2 => t('Show multiple AddtoCalendar Buttons'),.
+        1 => t('Single'),
+        2 => t('All'),
       ],
       '#default_value' => !empty($settings['addtocalendar_settings']['multiple_value']) ? $settings['addtocalendar_settings']['multiple_value'] : 1,
     ];
     $element['addtocalendar_settings']['delta'] = [
       '#type' => 'textfield',
       '#title' => t('Delta'),
+      '#description' => 'AddToCalendar button visibility for a particular date field (default starts with 0).',
       '#states' => [
         'visible' => [
           ':input[name="fields[' . $field_definition->get('field_name') . '][settings_edit_form][third_party_settings][addtocalendar][addtocalendar_settings][multiple_value]"]' => [
