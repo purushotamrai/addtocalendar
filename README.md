@@ -15,7 +15,7 @@ INTRODUCTION
 Add to Calendar Module integrates 'Add to Calendar' button provided by 
 addtocalendar.com which supports iCalender, Google Calendar, Outlook, 
 Outlook Online and Yahoo Calendar. It's basically a thirdparty field
-formatter setting available for datetime field formatters.
+formatter setting available for Datetime and Datetime Range field formatters.
 
 MODULE DETAILS
 --------------
@@ -25,8 +25,10 @@ supports all modern browsers and platforms: iOS, iPad, iPhone, Android,
 Windows, Blackberry. Provides handful of configuration for a really 
 flexible experience.
  
-Module internally extends Datetime field formatters using third party
+Module internally extends Datetime and Datetime Range field formatters using third party
 settings to append the "Add to Calendar" button besides date field.
+If the date field is multivalued than its configurable to show the button beside
+particular date field or for all.
 When clicked on this button, the event is exported to the corresponding
 website with proper information in the next tab where user can add the 
 event to their calendar.
@@ -74,6 +76,7 @@ MAINTAINERS
 Current maintainers:
 
  * Purushotam Rai (https://drupal.org/user/3193859)
+ * Gaurav Garg (https://www.drupal.org/u/gg24)
 
 
 This project has been sponsored by:
