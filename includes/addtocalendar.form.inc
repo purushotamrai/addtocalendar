@@ -100,7 +100,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
   if (\Drupal::moduleHandler()->moduleExists('token')) {
     $element['addtocalendar_settings']['token_help'] = [
       '#type' => 'markup',
-      '#token_types' => array('node'),
+      '#token_types' => ['node'],
       '#theme' => 'token_tree_link',
     ];
   }
@@ -110,7 +110,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
       '#type' => 'select',
       '#title' => $data['label'] . t(': field'),
       '#options' => $field_options,
-      '#description' => t('Select field to be used as @label for calendar events', array('@label' => $data['label'])),
+      '#description' => t('Select field to be used as @label for calendar events', ['@label' => $data['label']]),
       '#default_value' => !empty($settings['addtocalendar_settings'][$id]['field']) ? $settings['addtocalendar_settings'][$id]['field'] : '',
     ];
     $element['addtocalendar_settings'][$id]['tokenized'] = [
