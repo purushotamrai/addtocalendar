@@ -167,30 +167,29 @@ function _addtocalendar_preprocess_field(&$variables) {
           $variables['#attached']['library'][] = $style['library'];
         }
       }
-    }
-    // Setting #markup for all the date or daterange fields if multivalue is selected.
-    if ($settings['addtocalendar_settings']['multiple_value'] == 2) {
-      foreach ($variables['items'] as $k => $content) {
-        if (isset($variables['items'][$k]['content']['#markup'])) {
-          $variables['items'][$k]['content']['#markup'] .= render($build['addtocalendar'][$k]);
+
+      // Setting #markup for all the date or daterange fields if multivalue is selected.
+      if ($settings['addtocalendar_settings']['multiple_value'] == 2) {
+        foreach ($variables['items'] as $k => $content) {
+          if (isset($variables['items'][$k]['content']['#suffix'])) {
+            $variables['items'][$k]['content']['#suffix'] .= render($build['addtocalendar'][$k]);
+          }
+          else {
+            $variables['items'][$k]['content']['#suffix'] = render($build['addtocalendar'][$k]);
+          }
+          $variables['#attached']['library'][] = 'addtocalendar/base';
         }
-        elseif (isset($variables['items'][$k]['content'])) {
-          unset($variables['items'][$k]['content']['#theme']);
-          $variables['items'][$k]['content']['#markup'] = $variables['items'][$k]['content']['#text'] . render($build['addtocalendar'][$k]);
+      }
+      // Setting #markup for all the date or daterange fields if single value is selected.
+      else {
+        if (isset($variables['items'][$delta]['content']['#suffix'])) {
+          $variables['items'][$delta]['content']['#suffix'] .= render($build['addtocalendar']);
+        }
+        else {
+          $variables['items'][$delta]['content']['#suffix'] = render($build['addtocalendar']);
         }
         $variables['#attached']['library'][] = 'addtocalendar/base';
       }
-    }
-    // Setting #markup for all the date or daterange fields if single value is selected.
-    else {
-      if (isset($variables['items'][$delta]['content']['#markup'])) {
-        $variables['items'][$delta]['content']['#markup'] .= render($build['addtocalendar']);
-      }
-      elseif (isset($variables['items'][$delta]['content'])) {
-        unset($variables['items'][$delta]['content']['#theme']);
-        $variables['items'][$delta]['content']['#markup'] = $variables['items'][$delta]['content']['#text'] . render($build['addtocalendar']);
-      }
-      $variables['#attached']['library'][] = 'addtocalendar/base';
     }
   }
 }
