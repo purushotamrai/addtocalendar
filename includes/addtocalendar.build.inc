@@ -16,6 +16,9 @@ function _addtocalendar_preprocess_field(&$variables) {
   $view_mode = $variables['element']['#view_mode'];
   $field_name = $variables['element']['#field_name'];
 
+  // Determine if the field is multivalued.
+  $multivalued = count($variables['items']) > 1;
+
   // Get the field formatter settings...
   $entity_display = EntityViewDisplay::collectRenderDisplay($entity, $view_mode);
   $field_display = $entity_display->getComponent($field_name);
@@ -35,7 +38,7 @@ function _addtocalendar_preprocess_field(&$variables) {
       }
 
       // Unsetting values other than delta if single value is selected.
-      if ($settings['addtocalendar_settings']['multiple_value'] == 1) {
+      if ($multivalued && $settings['addtocalendar_settings']['multiple_value'] == 1) {
         $temp = $values[$delta];
         unset($values);
         $values = [$delta => $temp];
@@ -169,7 +172,7 @@ function _addtocalendar_preprocess_field(&$variables) {
       }
 
       // Setting #markup for all the date or daterange fields if multivalue is selected.
-      if ($settings['addtocalendar_settings']['multiple_value'] == 2) {
+      if ($multivalued && $settings['addtocalendar_settings']['multiple_value'] == 2) {
         foreach ($variables['items'] as $k => $content) {
           if (isset($variables['items'][$k]['content']['#suffix'])) {
             $variables['items'][$k]['content']['#suffix'] .= render($build['addtocalendar'][$k]);
