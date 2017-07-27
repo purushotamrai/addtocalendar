@@ -102,7 +102,6 @@ function _addtocalendar_preprocess_field(&$variables) {
         // Assign end date the value of start date if no end date is present and its not a daterange field.
         if (empty($end_date)) {
           $build['addtocalendar'][$index]['atc_date_end']['#value'] = (!empty($build['addtocalendar'][$index]['atc_date_end']['#value'])) ? $build['addtocalendar'][$index]['atc_date_end']['#value'] : $build['addtocalendar'][$index]['atc_date_start']['#value'];
-          $build['addtocalendar'][$index]['atc_date_end']['#value'] = (!empty($build['addtocalendar'][$index]['atc_date_end']['#value'])) ? $build['addtocalendar'][$index]['atc_date_start']['#value'] : $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
         }
         // Assign end date the value of end date if no end date is present and its a daterange field.
         else {
