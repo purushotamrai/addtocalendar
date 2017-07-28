@@ -5,8 +5,8 @@
  * Contains preprocess helper function.
  */
 
-use \Drupal\Core\Entity\Entity\EntityViewDisplay;
-use \Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\Core\Datetime\DrupalDateTime;
 
 /**
  * Helper function to preprocess datetime field.
@@ -80,7 +80,7 @@ function _addtocalendar_preprocess_field(&$variables) {
             default:
               $field = $settings['addtocalendar_settings'][$value]['field'];
               if (strip_tags($entity->{$field}->getFieldDefinition()
-                  ->getType()) == 'daterange'
+                ->getType()) == 'daterange'
               ) {
                 $class_value = strip_tags($entity->{$field}->end_value);
               }
@@ -101,7 +101,8 @@ function _addtocalendar_preprocess_field(&$variables) {
 
         // Assign end date the value of start date if no end date is present and its not a daterange field.
         if (empty($end_date)) {
-          $build['addtocalendar'][$index]['atc_date_end']['#value'] = (!empty($build['addtocalendar'][$index]['atc_date_end']['#value'])) ? $build['addtocalendar'][$index]['atc_date_end']['#value'] : $build['addtocalendar'][$index]['atc_date_start']['#value'];
+          $build['addtocalendar'][$index]['atc_date_end']['#value'] = (!empty($build['addtocalendar'][$index]['atc_date_end']['#value'])) ? $build['addtocalendar'][$index]['atc_date_start']['#value'] : $date;
+          $build['addtocalendar'][$index]['atc_date_end']['#value'] = $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]);
         }
         // Assign end date the value of end date if no end date is present and its a daterange field.
         else {
