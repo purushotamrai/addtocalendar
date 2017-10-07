@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Datetime\DrupalDateTime;
+use \Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Helper function to preprocess datetime field.
@@ -44,6 +45,17 @@ function _addtocalendar_preprocess_field(&$variables) {
         $values = [$delta => $temp];
         unset($temp);
       }
+
+      $display_text = new TranslatableMarkup($settings['addtocalendar_settings']['display_text']);
+      $build['addtocalendar_button'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'a',
+        '#value' => $display_text->__toString(),
+        '#attributes' => [
+          'class' => 'atcb-link',
+        ],
+      ];
+
       foreach ($values as $index => $date_val) {
         $date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$index]['value']), 'UTC');
         if (!empty($values[$index]['end_value']) && isset($values[$index]['end_value'])) {
@@ -132,7 +144,7 @@ function _addtocalendar_preprocess_field(&$variables) {
         $build['addtocalendar'][$index] = [
           '#type' => 'html_tag',
           '#tag' => 'span',
-          '#value' => '<var class="atc_event">' . render($build['addtocalendar'][$index]) . '</var>',
+          '#value' => render($build['addtocalendar_button']) . render($build['addtocalendar'][$index]) . '</var>',
           '#attributes' => [
             'class' => [
               'addtocalendar',
