@@ -83,6 +83,10 @@ function _addtocalendar_build_form($settings, $field_definition) {
     ],
   ];
 
+  if ($field_definition instanceof Drupal\Core\Field\BaseFieldDefinition) {
+    $field_definition = $field_definition->getConfig($field_definition->getTargetBundle());
+  }
+
   $fields = Drupal::service('entity_field.manager')->getFieldDefinitions($field_definition->get('entity_type'), $field_definition->get('bundle'));
   $field_options = [];
   foreach ($fields as $id => $field) {
