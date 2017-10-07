@@ -13,7 +13,7 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 Add to Calendar Module integrates 'Add to Calendar' button provided by 
-addtocalendar.com which supports iCalender, Google Calendar, Outlook, 
+addtocalendar.com which supports iCalendar, Google Calendar, Outlook,
 Outlook Online and Yahoo Calendar. It's basically a thirdparty field
 formatter setting available for Datetime and Datetime Range field formatters.
 

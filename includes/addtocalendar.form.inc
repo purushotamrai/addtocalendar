@@ -48,7 +48,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
   $element['addtocalendar_settings']['display_text'] = [
     '#type' => 'textfield',
     '#title' => t('Display Text'),
-    '#default_value' => !empty($settings['addtocalendar_settings']['display_text']) ? $settings['addtocalendar_settings']['display_text'] : t('Add to Calender'),
+    '#default_value' => !empty($settings['addtocalendar_settings']['display_text']) ? $settings['addtocalendar_settings']['display_text'] : t('Add to Calendar'),
   ];
 
   // Fetching site name and site email id.
