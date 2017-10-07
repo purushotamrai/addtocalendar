@@ -60,7 +60,7 @@ CONFIGURATION
   
 * Security Level: Use https to protect your users.
 
-* List of calenders to show in button list.
+* List of calendars to show in button list.
 
 TROUBLESHOOTING
 ---------------
