@@ -97,7 +97,7 @@ function _addtocalendar_preprocess_field(&$variables) {
                 $class_value = strip_tags($entity->{$field}->end_value);
               }
               else {
-                $class_value = strip_tags($entity->{$field}->value);
+                $class_value = strip_tags(render($entity->get($field)->view(['label' => 'hidden'])));
               }
               break;
           }
