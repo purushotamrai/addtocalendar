@@ -31,7 +31,7 @@ function _addtocalendar_preprocess_field(&$variables) {
     if ($settings['addtocalendar_show']) {
       $token_service = \Drupal::token();
       $token_options = ['langcode' => $entity->language()->getId(), 'callback' => '', 'clear' => TRUE];
-      $timeZone = date_default_timezone_get();
+      $timeZone = (!empty($field_display['settings']['timezone_override'])) ? $field_display['settings']['timezone_override'] : date_default_timezone_get();
       $values = $entity->{$field_name}->getValue();
       $delta = !empty($settings['addtocalendar_settings']['delta']) ? $settings['addtocalendar_settings']['delta'] : 0;
       if (empty($values[$delta]['value'])) {
@@ -57,9 +57,9 @@ function _addtocalendar_preprocess_field(&$variables) {
       ];
 
       foreach ($values as $index => $date_val) {
-        $date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$index]['value']), 'UTC');
+        $date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$index]['value']), $timeZone);
         if (!empty($values[$index]['end_value']) && isset($values[$index]['end_value'])) {
-          $end_date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$index]['end_value']), 'UTC');
+          $end_date = new DrupalDateTime(preg_replace('/T/', ' ', $values[$index]['end_value']), $timeZone);
         }
 
         $build['addtocalendar'][$index]['atc_date_start'] = [
