@@ -7,7 +7,7 @@
 
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Datetime\DrupalDateTime;
-use \Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Helper function to preprocess datetime field.
@@ -144,7 +144,7 @@ function _addtocalendar_preprocess_field(&$variables) {
         $build['addtocalendar'][$index] = [
           '#type' => 'html_tag',
           '#tag' => 'span',
-          '#value' => render($build['addtocalendar_button']) . render($build['addtocalendar'][$index]) . '</var>',
+          '#value' => render($build['addtocalendar_button']) . '<var class="atc_event">' .render($build['addtocalendar'][$index]) . '</var>',
           '#attributes' => [
             'class' => [
               'addtocalendar',
