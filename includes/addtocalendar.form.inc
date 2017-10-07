@@ -149,7 +149,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
       'Outlook Online' => t('Outlook Online'),
       'Yahoo! Calendar' => t('Yahoo! Calendar'),
     ],
-    '#default_value' => !empty($settings['addtocalendar_settings']['data_calendars']) ? $settings['addtocalendar_settings']['data_calendars'] : '',
+    '#default_value' => !empty($settings['addtocalendar_settings']['data_calendars']) ? $settings['addtocalendar_settings']['data_calendars'] : [],
     '#title' => t('List of calendars to show in button list.'),
   ];
 
