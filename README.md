@@ -33,7 +33,8 @@ When clicked on this button, the event is exported to the corresponding
 website with proper information in the next tab where user can add the 
 event to their calendar.
  
-External CSS and JS files are provided by Addtocalendar.com
+External CSS and JS files are provided by Addtocalendar.com which are being used by this module directly.
+If these are needed locally, we should consider using Library-overrides
 
 SIMILAR MODULES
 ---------------
