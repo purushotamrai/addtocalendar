@@ -128,7 +128,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
       'private' => t('Private'),
     ],
     '#description' => t('Use public for free access to event information from any places. User private if the event is closed to public access.'),
-    '#default_value' => !empty($settings['addtocalendar_settings']['atc_privacy']) ? $settings['addtocalendar_settings']['atc_privacy'] : '',
+    '#default_value' => !empty($settings['addtocalendar_settings']['atc_privacy']) ? $settings['addtocalendar_settings']['atc_privacy'] : 'public',
   ];
   $element['addtocalendar_settings']['data_secure'] = [
     '#type' => 'select',
@@ -138,7 +138,7 @@ function _addtocalendar_build_form($settings, $field_definition) {
       'true' => t('Use https only'),
       'false' => t('Use http only'),
     ],
-    '#default_value' => !empty($settings['addtocalendar_settings']['data_secure']) ? $settings['addtocalendar_settings']['data_secure'] : '',
+    '#default_value' => !empty($settings['addtocalendar_settings']['data_secure']) ? $settings['addtocalendar_settings']['data_secure'] : 'auto',
   ];
   $element['addtocalendar_settings']['data_calendars'] = [
     '#type' => 'checkboxes',
