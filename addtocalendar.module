@@ -26,10 +26,9 @@ function addtocalendar_help($route_name, RouteMatchInterface $route_match) {
  */
 function addtocalendar_field_formatter_third_party_settings_form($plugin, $field_definition, $view_mode, $form, $form_state) {
   $element = [];
-  // dsm(get_class_methods($plugin));
-  // dsm($plugin->getPluginId());
-  if($plugin->getPluginId() !== 'add_to_calendar'){
-    //make sure to avoid confliction in case add_to_calendar field formatter is used
+  if ($plugin->getPluginId() !== 'add_to_calendar') {
+    // Make sure to avoid confliction in case add_to_calendar field formatter is
+    // used.
     if (count(array_intersect(['datetime', 'daterange'], $plugin->getPluginDefinition()['field_types']))) {
       $settings = $plugin->getThirdPartySettings('addtocalendar');
       $element = _addtocalendar_build_form($settings, $field_definition);
