@@ -32,6 +32,11 @@ function addtocalendar_field_formatter_third_party_settings_form($plugin, $field
     if (count(array_intersect(['datetime', 'daterange'], $plugin->getPluginDefinition()['field_types']))) {
       $settings = $plugin->getThirdPartySettings('addtocalendar');
       $element = _addtocalendar_build_form($settings, $field_definition);
+
+      // Unset the start date to avoid conflicts.
+      if (isset($element['addtocalendar_settings']['atc_date_start'])) {
+        unset($element['addtocalendar_settings']['atc_date_start']);
+      }
     }
   }
   return $element;
