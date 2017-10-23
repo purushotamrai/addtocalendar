@@ -77,6 +77,10 @@ function _addtocalendar_build_form($settings, $field_definition) {
       'label' => t('Organizer'),
       'sample_data' => $site_mail,
     ],
+    'atc_date_start' => [
+      'label' => t('Start Date'),
+      'sample_data' => '',
+    ],
     'atc_date_end' => [
       'label' => t('End Date'),
       'sample_data' => '',
