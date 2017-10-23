@@ -8,6 +8,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
  * Class AddToCalendarApiWidget.
  */
 class AddToCalendarApiWidget {
+
   /**
    * Declare various setting variables for add to calendar api widget.
    *
@@ -25,6 +26,7 @@ class AddToCalendarApiWidget {
   protected $atcPrivacy;
   protected $atcDataSecure;
   protected $timeZone;
+
   /**
    * Hold the various calendars usable in the widget.
    *
@@ -60,7 +62,7 @@ class AddToCalendarApiWidget {
       'Yahoo! Calendar',
     );
     $this->atcDataCalendars = $data_calendars;
-    $this->timeZone = date_default_timezone_get();
+    $this->timeZone = drupal_get_user_timezone();
 
   }
 
@@ -96,10 +98,11 @@ class AddToCalendarApiWidget {
         'class' => 'atcb-link',
       ],
     ];
-
     $timeZone = $this->timeZone;
-    $date = new DrupalDateTime(preg_replace('/T/', ' ', $this->atcDateStart), $timeZone);
-    $end_date = new DrupalDateTime(preg_replace('/T/', ' ', $this->atcDateEnd), $timeZone);
+
+    // Assuming date and end_date is provide in UTC format.
+    $date = new DrupalDateTime(preg_replace('/T/', ' ', $this->atcDateStart), 'UTC');
+    $end_date = new DrupalDateTime(preg_replace('/T/', ' ', $this->atcDateEnd), 'UTC');
 
     $info = [
       'atc_date_start' => $date->format('Y-m-d H:i:s', ['timezone' => $timeZone]),
