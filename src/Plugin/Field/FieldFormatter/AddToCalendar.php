@@ -2,6 +2,7 @@
 
 namespace Drupal\addtocalendar\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Entity;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
@@ -115,12 +116,9 @@ class AddToCalendar extends FormatterBase {
    * Generate the output appropriate for one add to calendar setting.
    *
    * @param array $field_setting
-   *
    *   The field setting array.
-   *
-   * @param $entity
-   *   The entity from which the value is to be returned
-   *
+   * @param Drupal\Core\Entity $entity
+   *   The entity from which the value is to be returned.
    * @param array $options
    *   Provide various options usable to override the data value being return
    *   use 'use_raw_value' to return stored value in database.
@@ -129,7 +127,7 @@ class AddToCalendar extends FormatterBase {
    * @return string
    *   The textual output generated.
    */
-  public function getProperValue(array $field_setting, $entity, array $options = array()) {
+  public function getProperValue(array $field_setting, Entity $entity, array $options = array()) {
     $entity_type = $entity->getEntityTypeId();
     // Create token service.
     $token_service = \Drupal::token();
@@ -158,7 +156,8 @@ class AddToCalendar extends FormatterBase {
           }
         }
         else {
-          $value = strip_tags(render($entity->get($field)->view(['label' => 'hidden'])));
+          $value = $entity->get($field)->view(['label' => 'hidden']);
+          $value = strip_tags(render($value));
         }
         break;
     }
