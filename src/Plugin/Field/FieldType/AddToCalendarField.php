@@ -40,8 +40,9 @@ class AddToCalendarField extends BooleanItem {
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::fieldSettingsForm($form, $form_state);
     $settings = $this->getSettings();
-
+    $element['off_label']['#required'] = FALSE;
     $field_definition = $this->definition->getFieldDefinition();
+
     // Build add to calendar widget settings form.
     $element += _addtocalendar_build_form($settings, $field_definition);
     $element['addtocalendar_show']['#title'] = t('Add to Calendar settings');
